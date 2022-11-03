@@ -19,8 +19,8 @@ class ConfigValues {
         return $result
     }
 
-    [PSCustomObject]FromJson() {
-        $result = $this | ConvertFrom-Json
+    [PSCustomObject]FromJson($jsonValue) {
+        $result = $jsonValue | ConvertFrom-Json
         return $result
     }
 }
