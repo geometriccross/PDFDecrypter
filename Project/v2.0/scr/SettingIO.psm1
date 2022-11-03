@@ -1,18 +1,4 @@
-#class ConfigValues
-    #[string]$readonly:対象のpdfがあるフォルダーのパス
-    #[string]$readonly:pdfのパスワードがまとめられたcsvファイルのパス
 
-    #ConfigValues($dirPath, $passwordFilePath)
-        #$resultに引数を追加する
-        #return $result
-
-    #[string[]]ToStrings()
-        #[string[]]$result = @($dirPath, $passwordFilePath)
-        #return $result
-
-    #[PSCustomObject]ToJson()
-        #$result = $this | ConvertTo-Json
-        #return $result
 
 
 #class　初期化に関するものたち
@@ -29,3 +15,7 @@
         #$isContaineEnviroment = $env:Path.Contains($targetClass.フォルダーのパス)
         #$isExistPasswordFile = Test-Path $targetClass.パスワードファイルのパス
         #すべて満たしていればtrueを、そうでないならfalseを返す
+
+    #[bool]DeleteSetting($targetClass)
+        #$this.IsAppend($targetClass)がtrueなら
+        #該当の設定を削除する

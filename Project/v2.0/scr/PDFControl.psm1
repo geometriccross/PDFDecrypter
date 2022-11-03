@@ -42,6 +42,7 @@ class PDFControl : IDisposable {
             }
 
             foreach ($password in $this.passwordArgs.Get()) {
+                
                 try {
                     $outputPath = [Path]::ChangeExtension($_.FullName, ".temp")
                     $pdfReader = [iTextSharp.text.pdf.PdfReader]::new($_.FullName, $password.ToByte())
