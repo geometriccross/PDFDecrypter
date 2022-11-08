@@ -1,18 +1,43 @@
-#class　初期化に関するものたち
-    #読み込む($path)
+using namespace System
+using namespace System.IO
+
+class SettingIO{
+    static [PSCustomObject]LoadFrom([string]$path) {
         #settingsファイルから読み込む
-        #$setttingClassに代入、独自のデータ型
-        #それを返す
+        $isExists = Test-Path $path
+        if ($isExists -eq $false) {
+            throw [NullReferenceException]::new("Failed the progress to load a setting file. File is NOT Exist")
+        }
 
-    #[void]SettingAppend($ValueClass)
-        #渡された引数を設定として追加する
+        if ([File]::GetExtension($path).Contains(".json") -eq $false) {
+            throw [ArgumentException]::("File extension is invailed. Setting file need '.json'")
+        }
 
-    #[bool]IsAppend($targetClass)
-        #targetClassがちゃんと追加されているかどうかを確認する
-        #$isContaineEnviroment = $env:Path.Contains($targetClass.フォルダーのパス)
-        #$isExistPasswordFile = Test-Path $targetClass.パスワードファイルのパス
-        #すべて満たしていればtrueを、そうでないならfalseを返す
+        if ([SettingIO]::ObjectPropertyCheck() -eq $false) {
+            throw [ArgumentNullException]
+        }
 
-    #[bool]DeleteSetting($targetClass)
-        #$this.IsAppend($targetClass)がtrueなら
-        #該当の設定を削除する
+        $result = Get-Content $path | ConvertFrom-Json
+        return $result
+    }
+
+    static [bool]Save([PSCustomObject]$obj, [string]$fileName, [string]$dest) {
+        [bool]$result = $false
+        $path = Join-Path $dest -ChildPath $fileName
+        try {
+            $obj | ConvertTo-Json | Out-File -FilePath $path
+            $result = $true
+        }
+        catch {
+            throw $_.Exception
+        }
+
+        return $result
+    }
+
+    static [void]ObjectPropertyCheck([PSCustomObject]$obj) {
+        $obj | Get-Member -MemberType NoteProperty | ForEach-Object {
+            Write-Host $_.TypeNames
+        }
+    }
+}
