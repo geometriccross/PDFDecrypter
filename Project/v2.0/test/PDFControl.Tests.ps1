@@ -1,9 +1,10 @@
-using module "..\scr\lib\BouncyCastle.Crypto.dll"
-using module "..\scr\lib\itextsharp.dll"
+using namespace System
+using assembly "..\scr\lib\BouncyCastle.Crypto.dll"
+using assembly "..\scr\lib\itextsharp.dll"
+using module ".\TestUtil.psm1"
 using module "..\scr\PasswordArgs.psm1"
 using module "..\scr\PDFControl.psm1"
-using namespace System
-. "$PSScriptRoot\TestUtil.ps1"
+$env:Path += "..\scr\lib\qpdf-10.6.3\bin"
 
 Describe "PDFControlのテスト" {
     BeforeAll {
@@ -13,9 +14,15 @@ Describe "PDFControlのテスト" {
         $folderName = "ForTest"
         $dirPath = $PSScriptRoot
         for ([int]$i = 0; $i -lt $depth; $i++) {
-            $dirPath = [TestUtil]::CreateTestFolder($dirPath, $folderName + "_" + $i)
-            $filePathes = [TestUtil]::CreatePDF($dirPath, 3)
-            $passwords += [TestUtil]::EncryptPDF($filePathes, $true)
+            try {
+                $dirPath = [TestUtil]::CreateTestFolder($dirPath, $folderName + "_" + $i)
+                $filePathes = [TestUtil]::CreatePDF($dirPath, 3)
+                $passwords += [TestUtil]::EncryptPDF($filePathes, $true)   
+            }
+            catch {
+                Write-Error $_.Exception
+            }
+
         }
 
         $folderName += "_0"

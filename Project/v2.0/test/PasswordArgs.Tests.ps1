@@ -1,8 +1,7 @@
-using module "..\scr\lib\BouncyCastle.Crypto.dll"
-using module "..\scr\lib\itextsharp.dll"
+using assembly "..\scr\lib\BouncyCastle.Crypto.dll"
+using assembly "..\scr\lib\itextsharp.dll"
+using module ".\TestUtil.psm1"
 using module "..\scr\PasswordArgs.psm1"
-. "$PSScriptRoot\TestUtil.ps1"
-
 
 Describe "PasswordArgsのテスト" {
     BeforeAll {
