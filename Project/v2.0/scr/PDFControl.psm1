@@ -2,19 +2,17 @@ using namespace System
 using namespace System.Collections
 using namespace System.Collections.Generic
 using namespace System.IO
-using module ".\lib\BouncyCastle.Crypto.dll"
-using module ".\lib\itextsharp.dll"
+using assembly ".\lib\BouncyCastle.Crypto.dll"
+using assembly ".\lib\itextsharp.dll"
 using module ".\PasswordArgs.psm1"
 
 class PDFControl : IDisposable {
     $passwordArgs = $null
     PDFControl([PasswordArgs]$passwordArgs) {
-        if ($null -eq $this.passwordArgs) {
-            $this.passwordArgs = $passwordArgs
-        }
+        $this.passwordArgs = $passwordArgs
     }
 
-    static [boolean]IsEncrypt([string]$filePath) {
+    static [bool]IsEncrypt([string]$filePath) {
         $result = $false
         $reader = $null
         try {
@@ -23,47 +21,40 @@ class PDFControl : IDisposable {
         catch [iTextSharp.text.exceptions.BadPasswordException] {
             $result = $true
         }
-        catch {
-            Write-Host $_.Exception
-        }
         finally {
-            if($null -ne $reader) {
-                $reader.Dispose()
-            }
+            $null -eq $reader ? $null : $reader.Dispose()
         }
 
         return $result
     }
 
-    [void]Decrypt([string]$dirPath, [int]$depth) {
-        Get-ChildItem $dirPath -Recurse -Filter "*.pdf" -Depth $depth | ForEach-Object { 
-            if([PDFControl]::IsEncrypt($_.FullName) -eq $false) {
-                return
+    [void]Decrypt([string]$filePath, [string]$password) {
+        $isEncrypt = [PDFControl]::IsEncrypt($filePath)
+        if ($isEncrypt -eq $false) { return }
+        else {
+            qpdf --decrypt $filePath --password=$password --replace-input
+        }
+    }
+
+    [void]DecryptAll([string]$dirPath, [int]$depth) {
+        foreach ($filePath in [Directory]::GetFiles($dirPath, "*.pdf", [SearchOption]::AllDirectories)) {
+            Write-Host "Target:$filePath"
+            if ([PDFControl]::IsEncrypt($filePath) -eq $false) {
+                Write-Host $filePath "is NOT encrypted"
+                continue
             }
 
+            [int]$tryCount = 0
             foreach ($password in $this.passwordArgs.Get()) {
+                if ([PDFControl]::IsEncrypt($filePath) -eq $false) {
+                    Write-Host "Decryption succeeded:$filePath"
+                    break
+                }
                 
-                try {
-                    $outputPath = [Path]::ChangeExtension($_.FullName, ".temp")
-                    $pdfReader = [iTextSharp.text.pdf.PdfReader]::new($_.FullName, $password.ToByte())
-                    $pdfWriter = [iTextSharp.text.pdf.PdfWriter]::new($outputPath)
-                    $pdfDocumnt = [iTextSharp.text.pdf.PdfDocument]::new($pdfReader, $pdfWriter)
-
-                    Write-Host "Password Correct : $password"
-                }
-                catch [iTextSharp.text.exceptions.BadPasswordException] {
-                    Write-Host "Password Missmatch : $password"
-                }
-                catch {
-                    throw $_.Exception
-                }
-                finally {
-                    $pdfDocumnt.Close()
-                    $pdfReader.Dispose()
-                    $pdfWriter.Dispose()
-                }
+                $tryCount++
+                Write-Host "Try Password:$password, Time:$tryCount"
+                qpdf --decrypt $filePath --password=$password --replace-input
             }
-
         }
     }
 

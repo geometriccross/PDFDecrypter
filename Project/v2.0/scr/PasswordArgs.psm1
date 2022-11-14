@@ -16,8 +16,8 @@ class PasswordArgs : IDisposable {
     }
 
     #ファイルからパスワード一覧を取得
-    [string[]]LoadFrom([string]$path) {  
-        $isExists = Test-Path -Path $path      
+    [string[]]LoadFrom([string]$path) {
+        $isExists = Test-Path $path
         if ($isExists -eq $false) {
             throw [NullReferenceException]::new('File is NOT exist.' + $path)
         }

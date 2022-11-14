@@ -73,8 +73,8 @@ class TestUtil {
             }
             finally {
                 $doc.CloseDocument()
-                $fs.Close()
                 $fs.Dispose()
+                $writer.Close
             }
 
             $result += $filePath

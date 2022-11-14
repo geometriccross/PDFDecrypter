@@ -1,8 +1,9 @@
 using namespace System
 using namespace System.IO
+using module '.\ConfigValues.psm1'
 
 class SettingIO{
-    static [PSCustomObject]LoadFrom([string]$path) {
+    static [ConfigValues]LoadFrom([string]$path) {
         #settingsファイルから読み込む
         $isExists = Test-Path $path
         if ($isExists -eq $false) {
@@ -13,31 +14,25 @@ class SettingIO{
             throw [ArgumentException]::("File extension is invailed. Setting file need '.json'")
         }
 
-        if ([SettingIO]::ObjectPropertyCheck() -eq $false) {
-            throw [ArgumentNullException]
-        }
-
         $result = Get-Content $path | ConvertFrom-Json
         return $result
     }
 
-    static [bool]Save([PSCustomObject]$obj, [string]$fileName, [string]$dest) {
+    static [bool]Save([ConfigValues]$obj) {
         [bool]$result = $false
-        $path = Join-Path $dest -ChildPath $fileName
+        $path = Join-Path $obj.Destination() -ChildPath $obj.ConfigName()
+        $fs = [FileStream]::new($path, [FileMode]::Create)
         try {
-            $obj | ConvertTo-Json | Out-File -FilePath $path
+            $fs.Write($obj.ToJson())
             $result = $true
         }
         catch {
             throw $_.Exception
         }
+        finally {
+            $fs.Dispose()
+        }
 
         return $result
-    }
-
-    static [void]ObjectPropertyCheck([PSCustomObject]$obj) {
-        $obj | Get-Member -MemberType NoteProperty | ForEach-Object {
-            Write-Host $_.TypeNames
-        }
     }
 }

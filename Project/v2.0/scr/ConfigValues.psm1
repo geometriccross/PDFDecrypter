@@ -1,34 +1,26 @@
 class ConfigValues {
-    [string]$private:configName
-    [string]ConfigName() { return $this.configName }
-
-    [string]$private:targetDirectoryPath
-    [string]TargetDirectoryPath() { return $this.targetDirectoryPath }
-
-    [string]$private:passwordsFilePath
-    [string]PasswordsFilePath() { return $this.passwordsFilePath }
-
-    [string]$private:destination
-    [string]Dest() { return $this.destination }
+    [string]$ConfigName
+    [string]$TargetDirectoryPath
+    [string]$PasswordsFilePath
+    [string]$Destination
 
     ConfigValues($configName, $targetDirectoryPath, $passwordsFilePath, $dest) {
-        $this.configName = $configName
-        $this.targetDirectoryPath = $targetDirectoryPath
-        $this.passwordsFilePath = $passwordsFilePath
-        $this.destination = $dest
+        $this.ConfigName = $configName
+        $this.TargetDirectoryPath = $targetDirectoryPath
+        $this.PasswordsFilePath = $passwordsFilePath
+        $this.Destination = $dest
     }
 
     static [ConfigValues]CreateTemplateConfig() {
-        $name = "ConfigName:TemplateConfig"
-        $dirPath = "DirectoryPath:no data"
-        $passPath = "PasswordsPath:no data"
-        $dest = "Dest:no data"
-        $result = [ConfigValues]::new($name, $dirPath, $passPath, $dest)
-        return $result
+        $name = "TemplateConfig"
+        $dirPath = "ForTest"
+        $passPath = "no data"
+        $dest = "$PSScriptRoot\$name.json"
+        return [ConfigValues]::new($name, $dirPath, $passPath, $dest)
     }
 
     [string[]]ToStrings() {
-        [string[]]$result = @($this.targetDirectoryPath, $this.passwordsFilePath, $this.settingFilePath)
+        [string[]]$result = @($this.ConfigName, $this.TargetDirectoryPath, $this.PasswordsFilePath, $this.Destination)
         return $result
     }
 

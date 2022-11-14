@@ -4,19 +4,21 @@ using assembly "..\scr\lib\itextsharp.dll"
 using module ".\TestUtil.psm1"
 using module "..\scr\PasswordArgs.psm1"
 using module "..\scr\PDFControl.psm1"
-$env:Path += "..\scr\lib\qpdf-10.6.3\bin"
+$qpdfPath = Split-Path $PSScriptRoot
+$env:Path += "$qpdfPath\scr\lib\qpdf-10.6.3\bin;"
 
 Describe "PDFControlのテスト" {
     BeforeAll {
         $passwords = @(@())
-        
-        $depth = 5
+        $depth = 2
+        $createPdfNum = 3
+
         $folderName = "ForTest"
         $dirPath = $PSScriptRoot
         for ([int]$i = 0; $i -lt $depth; $i++) {
             try {
                 $dirPath = [TestUtil]::CreateTestFolder($dirPath, $folderName + "_" + $i)
-                $filePathes = [TestUtil]::CreatePDF($dirPath, 3)
+                $filePathes = [TestUtil]::CreatePDF($dirPath, $createPdfNum)
                 $passwords += [TestUtil]::EncryptPDF($filePathes, $true)   
             }
             catch {
@@ -33,7 +35,7 @@ Describe "PDFControlのテスト" {
     AfterAll {
         $isExists = Test-Path -Path $dirPath
         if ($isExists -eq $true) {
-            Remove-Item $dirPath -Recurse -Force
+            Remove-Item $dirPath -Force -Recurse
         }
     }
 
@@ -43,7 +45,6 @@ Describe "PDFControlのテスト" {
     }
 
     AfterEach {
-        $passwordArgs.Dispose()
         $pdfControl.Dispose()
     }
 
@@ -51,7 +52,12 @@ Describe "PDFControlのテスト" {
         It "パスワードが掛かっているかの確認ができるか" {
             $pathes = @()
             for ([int]$i = 0; $i -lt 2; $i++) {
-                $pathes += [TestUtil]::CreatePDF($dirPath, 1)
+                try {
+                    $pathes += [TestUtil]::CreatePDF($dirPath, 1)
+                }
+                catch {
+                    Write-Error $_.Exception
+                }
             }
 
             [TestUtil]::EncryptPDF($pathes[0], $false)
@@ -66,48 +72,37 @@ Describe "PDFControlのテスト" {
             $hasPassword -ne $noPassword | Should Be $true
         }
 
-        It "パスワードの解除ができるか" {
-            $pdfControl.Decrypt($dirPath, $depth)
+        It "単一のPDFの復号化ができるか" {
+            $filePathes = Get-ChildItem -Path $dirPath -Filter "*.pdf" | ForEach-Object { $_.FullName }
+            [string]$filePath = $filePathes[1]
 
-            [int]$isEncryotCount = 0
-            Get-ChildItem -Path $dirPath -Filter "*.pdf" | ForEach-Object {
-                $isEncryotCount += $pdfControl.IsEncrypt($_.FullName) ? 1 : 0
-            }
-
-            $isEncryotCount | Should Be $passwordArgs.Get().Count
-        }
-
-        It "一時的なテスト" {
-            $pdfPath = Get-ChildItem -Path $dirPath -Filter "*.pdf"
-            [string]$pdfPath = $pdfPath[0]
-            $isExists = Test-Path $pdfPath
-            if ($isExists -eq $false) {
-                break
-            }
-
-            $resultPath = $pdfPath.Replace(".pdf", "_decrypt.pdf")
-            $pdfPassword = [IO.Path]::GetFileNameWithoutExtension($pdfPath)
-
-            $fs = [IO.FileStream]::new($resultPath, [IO.FileMode]::Create)
-            $reader = [iTextSharp.text.pdf.PdfReader]::new($pdfPath, [Text.Encoding]::UTF8.GetBytes($pdfPassword))
-            $writer = [iTextSharp.text.pdf.PdfWriter]::new($resultPath)
-            
             try {
-                $document = [iTextSharp.text.pdf.PdfDocument]::new(
-                    $reader,
-                    $writer)   
+                $pdfControl.Decrypt($filePath, [IO.Path]::GetFileNameWithoutExtension($filePath))
             }
             catch {
                 Write-Error $_.Exception
             }
-            finally {
-                $document.Close()
-                $reader.Dispose()
-                $writer.Dispose()
-                $fs.Dispose()
+
+            [PDFControl]::IsEncrypt($filePath) | Should Be $false
+        }
+
+        It "複数のPDFの復号化ができるか" {
+            try {
+                $pdfControl.DecryptAll($dirPath, $depth)
+            }
+            catch {
+                Write-Error $_.Exception
             }
 
-            $pdfControl.IsEncrypt($resultPath) | Should Be $false            
+            [bool]$result = $false
+            Get-ChildItem -Path $dirPath -Filter "*.pdf" -Recurse | ForEach-Object {
+                $isEncrypt = [PDFControl]::IsEncrypt($_.FullName)
+                if ($isEncrypt -eq $true) {
+                    $result = $isEncrypt
+                }
+            }
+
+            $result | Should Be $false
         }
     }
 }
