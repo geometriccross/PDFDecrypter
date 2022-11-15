@@ -29,8 +29,8 @@ class ConfigValues {
         return $result
     }
 
-    [ConfigValues]FromJson($jsonValue) {
+    static [ConfigValues]FromJson($jsonValue) {
         $result = $jsonValue | ConvertFrom-Json
-        return $result
+        return [ConfigValues]::new($result.ConfigName, $result.TargetDirectoryPath, $result.PasswordsFilePath, $result.Destination)
     }
 }

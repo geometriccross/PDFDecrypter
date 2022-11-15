@@ -14,23 +14,25 @@ class SettingIO{
             throw [ArgumentException]::("File extension is invailed. Setting file need '.json'")
         }
 
-        $result = Get-Content $path | ConvertFrom-Json
+        $result = Get-Content $path
+        $result = [ConfigValues]::FromJson($result)
         return $result
     }
 
     static [bool]Save([ConfigValues]$obj) {
         [bool]$result = $false
-        $path = Join-Path $obj.Destination() -ChildPath $obj.ConfigName()
-        $fs = [FileStream]::new($path, [FileMode]::Create)
+        New-Item $obj.Destination
+        [StreamWriter]$sw = $null
         try {
-            $fs.Write($obj.ToJson())
+            $sw = [StreamWriter]::new($obj.Destination)
+            $sw.Write($obj.ToJson())
             $result = $true
         }
         catch {
             throw $_.Exception
         }
         finally {
-            $fs.Dispose()
+            $null -eq $sw ? $null : $sw.Dispose()
         }
 
         return $result
