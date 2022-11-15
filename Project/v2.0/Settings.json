@@ -1,5 +1,5 @@
 {
-    "ConfigName":"Setting",
+    "ConfigName":"settings",
     "TargetDirectoryPath":"no data",
     "PasswordsFilePath":"H:\\マイドライブ\\Tool\\PDFDecrypter\\Project\\v2.0\\password.csv",
     "Destination":"H:\\マイドライブ\\Tool\\PDFDecrypter\\Project\\v2.0\\Settings.json"

@@ -38,7 +38,8 @@ Describe "SettingIOのテスト" {
         }
 
         It "jsonファイルを読み込めるか" {
-            [SettingIO]::LoadFrom($config.Destination)
+            $result = [SettingIO]::LoadFrom($config.Destination)
+            $result.ToStrings() | Should Be $config.ToStrings()
         }
     }
 }

@@ -10,7 +10,7 @@ class SettingIO{
             throw [NullReferenceException]::new("Failed the progress to load a setting file. File is NOT Exist")
         }
 
-        if ([File]::GetExtension($path).Contains(".json") -eq $false) {
+        if ([Path]::GetExtension($path).Contains(".json") -eq $false) {
             throw [ArgumentException]::("File extension is invailed. Setting file need '.json'")
         }
 

@@ -88,7 +88,7 @@ Describe "PDFControlのテスト" {
 
         It "複数のPDFの復号化ができるか" {
             try {
-                $pdfControl.DecryptAll($dirPath, $depth)
+                $pdfControl.DecryptAll($dirPath)
             }
             catch {
                 Write-Error $_.Exception

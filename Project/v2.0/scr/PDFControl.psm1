@@ -37,6 +37,11 @@ class PDFControl : IDisposable {
     }
 
     [void]DecryptAll([string]$dirPath) {
+        $isFileExist = Test-Path $dirPath
+        if ($isFileExist -eq $false) {
+            throw [InvalidDataException]::new("TargetDirectoryPath : $dirPath is an invailed value. You need to check setting file.")
+        }
+        
         foreach ($filePath in [Directory]::GetFiles($dirPath, "*.pdf", [SearchOption]::AllDirectories)) {
             Write-Host "Target:$filePath"
             if ([PDFControl]::IsEncrypt($filePath) -eq $false) {

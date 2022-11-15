@@ -24,7 +24,7 @@ class PasswordArgs : IDisposable {
 
         $extension = [Path]::GetExtension($path)
         if ($extension -ne '.csv') {
-            throw [InvalidDataException]::new('The extension is different. \The file to be read must be a "csv."')
+            throw [InvalidDataException]::new('The extension is different. The file to be read must be a "csv."')
         }
 
         $result = @(@())
