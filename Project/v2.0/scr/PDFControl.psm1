@@ -36,7 +36,7 @@ class PDFControl : IDisposable {
         }
     }
 
-    [void]DecryptAll([string]$dirPath, [int]$depth) {
+    [void]DecryptAll([string]$dirPath) {
         foreach ($filePath in [Directory]::GetFiles($dirPath, "*.pdf", [SearchOption]::AllDirectories)) {
             Write-Host "Target:$filePath"
             if ([PDFControl]::IsEncrypt($filePath) -eq $false) {
