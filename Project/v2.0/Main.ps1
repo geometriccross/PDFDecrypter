@@ -9,6 +9,8 @@ using module ".\scr\SettingIO.psm1"
 $qpdfPath = Split-Path $PSScriptRoot
 $env:Path += "$qpdfPath\scr\lib\qpdf-10.6.3\bin;"
 
+Write-Host "PDFDecrypter"
+
 try {
     Push-Location $PSScriptRoot
     [ConfigValues]$config = [SettingIO]::LoadFrom("$PSScriptRoot\settings.json")
@@ -35,4 +37,3 @@ catch {
 finally {
     Pop-Location
 }
-
