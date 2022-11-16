@@ -1,11 +1,11 @@
 using namespace System
-using assembly "..\scr\lib\BouncyCastle.Crypto.dll"
-using assembly "..\scr\lib\itextsharp.dll"
+using assembly "..\src\lib\BouncyCastle.Crypto.dll"
+using assembly "..\src\lib\itextsharp.dll"
 using module ".\TestUtil.psm1"
-using module "..\scr\PasswordArgs.psm1"
-using module "..\scr\PDFControl.psm1"
+using module "..\src\PasswordArgs.psm1"
+using module "..\src\PDFControl.psm1"
 $qpdfPath = Split-Path $PSScriptRoot
-$env:Path += "$qpdfPath\scr\lib\qpdf-10.6.3\bin;"
+$env:Path += "$qpdfPath\src\lib;"
 
 Describe "PDFControlのテスト" {
     BeforeAll {

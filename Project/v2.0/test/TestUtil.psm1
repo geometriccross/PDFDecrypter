@@ -2,8 +2,8 @@ using namespace System
 using namespace System.Collections
 using namespace System.Collections.Generic
 using namespace System.IO
-using assembly "..\scr\lib\BouncyCastle.Crypto.dll"
-using assembly "..\scr\lib\itextsharp.dll"
+using assembly "..\src\lib\BouncyCastle.Crypto.dll"
+using assembly "..\src\lib\itextsharp.dll"
 
 class TestUtil {
     static [double]AverageTimeMeasure([scriptblock]$target, $progressTime) {

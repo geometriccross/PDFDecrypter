@@ -1,9 +1,9 @@
 using namespace System
 using namespace System.IO
-using assembly "..\scr\lib\BouncyCastle.Crypto.dll"
-using assembly "..\scr\lib\itextsharp.dll"
-using module "..\scr\ConfigValues.psm1"
-using module "..\scr\SettingIO.psm1"
+using assembly "..\src\lib\BouncyCastle.Crypto.dll"
+using assembly "..\src\lib\itextsharp.dll"
+using module "..\src\ConfigValues.psm1"
+using module "..\src\SettingIO.psm1"
 using module ".\TestUtil.psm1"
 
 Describe "SettingIOのテスト" {
