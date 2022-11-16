@@ -23,7 +23,7 @@ class PDFControl : IDisposable {
         }
         catch {
             if ($_.Exception.Message.Contains("Unknown encryption type R = 6")) {
-                $result = $false
+                $result = $true
             }
         }
         finally {

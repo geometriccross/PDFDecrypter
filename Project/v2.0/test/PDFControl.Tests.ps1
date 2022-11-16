@@ -49,6 +49,7 @@ Describe "PDFControlのテスト" {
     }
 
     Context "正常系の確認" {
+        <#
         It "パスワードが掛かっているかの確認ができるか" {
             $pathes = @()
             for ([int]$i = 0; $i -lt 2; $i++) {
@@ -103,6 +104,18 @@ Describe "PDFControlのテスト" {
             }
 
             $result | Should Be $false
+        }
+        #>
+
+        It "一時的な確認" {
+            try {
+	            $targetPath = 'H:\マイドライブ\Tool\PDFDecrypter\Project\v2.0\test\2022 獣医寄生虫病学A スライド（第１回）（配布用）.pdf'
+	            $isEncrypt = [PDFControl]::IsEncrypt($targetPath)
+	            Write-Host $isEncrypt
+            }
+            catch {
+                Write-Error $_.Exception
+            }
         }
         
     }
