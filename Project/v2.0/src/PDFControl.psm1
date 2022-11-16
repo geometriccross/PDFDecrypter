@@ -21,6 +21,11 @@ class PDFControl : IDisposable {
         catch [iTextSharp.text.exceptions.BadPasswordException] {
             $result = $true
         }
+        catch {
+            if ($_.Exception.Message.Contains("Unknown encryption type R = 6")) {
+                $result = $false
+            }
+        }
         finally {
             $null -eq $reader ? $null : $reader.Dispose()
         }
