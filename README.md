@@ -14,4 +14,4 @@ Runファイルをダブルクリックすると、スクリプトの実行が�
 
 ## 使用したライブラリー
 qpdf-10.6.3<br>
-iTextSharp
+iTextSharp version-5.5.13.3
