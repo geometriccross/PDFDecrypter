@@ -33,7 +33,6 @@ try {
 catch {
     Write-Error $_.Exception
 }
-
 finally {
     Pop-Location
 }
