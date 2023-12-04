@@ -1,10 +1,10 @@
-import FilePathGet
+module FilePathGetTest (createExplorerTest) where
 
+import System.FilePath
 import Test.HUnit
 
-pathesTest = 
-    TestCase (assertEqual "pathes" ["..",".","FIlePathGetTest.hs","FilePathGet.hs",".",".."] 
-        (pathes "."))
+import FilePathGet
 
-main = do
-    runTestTT pathesTest
+createExplorerTest = TestCase $ do
+    explorer <- createExplorer "test"
+    assertEqual "createExplorer" (Directory "test" ["FIlePathGetTest.hs"]) explorer
