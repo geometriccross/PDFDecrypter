@@ -24,8 +24,7 @@ dependencies:
 - filepath
 - sqlite-simple
 - HUnit
-- test-framework
-- test-framework-hunit
+- directory
 
 ghc-options:
 - -Wall
@@ -54,7 +53,7 @@ executables:
 
 tests:
   PDFDecrypter-test:
-    main:                Spec.hs
+    main:                TestHub.hs
     source-dirs:         test
     ghc-options:
     - -threaded

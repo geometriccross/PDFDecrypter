@@ -36,10 +36,9 @@ library
   build-depends:
       HUnit
     , base >=4.7 && <5
+    , directory
     , filepath
     , sqlite-simple
-    , test-framework
-    , test-framework-hunit
   default-language: Haskell2010
 
 executable PDFDecrypter-exe
@@ -55,17 +54,16 @@ executable PDFDecrypter-exe
       HUnit
     , PDFDecrypter
     , base >=4.7 && <5
+    , directory
     , filepath
     , sqlite-simple
-    , test-framework
-    , test-framework-hunit
   default-language: Haskell2010
 
 test-suite PDFDecrypter-test
   type: exitcode-stdio-1.0
-  main-is: Spec.hs
+  main-is: TestHub.hs
   other-modules:
-      FIlePathGetTest
+      FilePathGetTest
       Paths_PDFDecrypter
   autogen-modules:
       Paths_PDFDecrypter
@@ -76,8 +74,7 @@ test-suite PDFDecrypter-test
       HUnit
     , PDFDecrypter
     , base >=4.7 && <5
+    , directory
     , filepath
     , sqlite-simple
-    , test-framework
-    , test-framework-hunit
   default-language: Haskell2010
