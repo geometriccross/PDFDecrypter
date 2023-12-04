@@ -35,6 +35,7 @@ library
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.7 && <5
+    , sqlite-simple
   default-language: Haskell2010
 
 executable PDFDecrypter-exe
@@ -49,6 +50,7 @@ executable PDFDecrypter-exe
   build-depends:
       PDFDecrypter
     , base >=4.7 && <5
+    , sqlite-simple
   default-language: Haskell2010
 
 test-suite PDFDecrypter-test
@@ -64,4 +66,5 @@ test-suite PDFDecrypter-test
   build-depends:
       PDFDecrypter
     , base >=4.7 && <5
+    , sqlite-simple
   default-language: Haskell2010
